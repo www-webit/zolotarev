@@ -1,5 +1,80 @@
 // script.js
+// ====== ЗАМЕНИТЕ НА СВОИ ДАННЫЕ TELEGRAM ======
+const BOT_TOKEN = '8941011307:AAFIRiu5b2zWWRxmbc9AxTMCi-7Rp9ZhKFM';
+const CHAT_ID = '8308485818';
+// ============================================
+
 (function() {
+  // Модальное окно и форма
+  const modalOverlay = document.getElementById('modal-overlay');
+  const modal = document.getElementById('modal');
+  const errorModal = document.getElementById('error-modal');
+  const modalTrigger = document.getElementById('modal-trigger');
+  const modalClose = document.getElementById('modal-close');
+  const contactForm = document.getElementById('contact-form');
+  const formSuccess = document.getElementById('form-success');
+
+  function openModal() {
+    modalOverlay.classList.add('active');
+    modal.style.display = 'block';
+    errorModal.style.display = 'none';
+    formSuccess.style.display = 'none';
+    contactForm.style.display = 'flex';
+    contactForm.reset();
+  }
+  function closeModal() {
+    modalOverlay.classList.remove('active');
+    modal.style.display = 'none';
+    errorModal.style.display = 'none';
+  }
+  modalTrigger.addEventListener('click', openModal);
+  modalClose.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+
+  // Отправка в Telegram
+  async function sendToTelegram(text) {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: text,
+        parse_mode: 'HTML'
+      })
+    });
+    if (!res.ok) throw new Error('Telegram API error');
+    return res.json();
+  }
+
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = contactForm.querySelector('.submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправка...';
+
+    const formData = new FormData(contactForm);
+    const name = formData.get('name').trim();
+    const contact = formData.get('contact').trim();
+    const message = formData.get('message').trim();
+
+    const text = `<b>Новая заявка с сайта!</b>\n👤 Имя: ${name}\n📞 Контакт: ${contact}\n📝 Сообщение: ${message || 'не указано'}`;
+
+    try {
+      await sendToTelegram(text);
+      contactForm.style.display = 'none';
+      formSuccess.style.display = 'block';
+    } catch (err) {
+      console.error('Ошибка отправки:', err);
+      modal.style.display = 'none';
+      errorModal.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Отправить';
+    }
+  });
+
+  // ===== ОСТАЛЬНОЙ ФУНКЦИОНАЛ (кейсы, отзывы, тарифы, анимации) =====
   const cases = [
     { title: "Интернет-магазин автотоваров", desc: "Перезапустили каталог, переработали корзину", img: "https://picsum.photos/id/1072/600/340", metric: "Конверсия в заявку +180%", tech: "Next.js, Stripe" },
     { title: "Лендинг премиальной недвижимости", desc: "Продающий лендинг с виртуальным туром", img: "https://picsum.photos/id/106/600/340", metric: "Заявки выросли в 3,5 раза", tech: "React, Three.js" },
@@ -13,23 +88,23 @@
     { name: "Ольга Никитина", project: "E-commerce", text: "Магазин работает идеально, заказы пошли сразу.", avatar: "https://i.pravatar.cc/150?img=9" }
   ];
   const tariffs = [
-    { 
-      title: "Лендинг", 
-      price: "3 890 ₽", 
+    {
+      title: "Лендинг",
+      price: "3 890 ₽",
       oldPrice: "19 900 ₽",
       features: ["Анализ аудитории", "Уникальный дизайн", "Адаптивная вёрстка", "5 правок бесплатно"],
       popular: false
     },
-    { 
-      title: "Бизнес", 
-      price: "5 499 ₽", 
+    {
+      title: "Бизнес",
+      price: "5 499 ₽",
       oldPrice: "35 900 ₽",
       features: ["Всё из «Лендинг»", "До 7 уникальных страниц", "Безлимит правок"],
       popular: true
     },
-    { 
-      title: "Премиум", 
-      price: "10 000 ₽", 
+    {
+      title: "Премиум",
+      price: "10 000 ₽",
       oldPrice: "65 900 ₽",
       features: ["Всё из «Бизнес»", "Индивидуальный функционал", "Анимации high-end", "Безлимит правок"],
       popular: false
