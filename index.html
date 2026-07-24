@@ -144,6 +144,7 @@
     <div class="container">
       <h2 class="section-title">Начнём сегодня</h2>
       <p class="contact-subtitle">Первая консультация бесплатно. Расскажите о проекте — я предложу решение.</p>
+      <button class="primary-btn modal-trigger" id="modal-trigger">Оставить заявку</button>
       <div class="contact-buttons">
         <a href="https://t.me/yourtelegram" class="contact-btn telegram" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
         <a href="https://vk.com/yourvk" class="contact-btn vk" target="_blank"><i class="fab fa-vk"></i> ВКонтакте</a>
@@ -164,6 +165,33 @@
       <p>© 2026 Павел Золотарёв. Все права защищены.</p>
     </div>
   </footer>
+
+  <!-- Модальное окно заявки и ошибки -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <h2 class="modal-title">Оставить заявку</h2>
+      <form id="contact-form" novalidate>
+        <input type="text" name="name" placeholder="Ваше имя" required minlength="2">
+        <input type="text" name="contact" placeholder="Телефон или email" required>
+        <textarea name="message" placeholder="Кратко о проекте" rows="4"></textarea>
+        <button type="submit" class="submit-btn">Отправить</button>
+      </form>
+      <div class="form-success" id="form-success" style="display:none;">Заявка отправлена! Свяжусь в ближайшее время.</div>
+    </div>
+
+    <div class="modal" id="error-modal" style="display:none;">
+      <button class="modal-close" onclick="document.getElementById('error-modal').style.display='none'">&times;</button>
+      <h2 class="modal-title">Не удалось отправить</h2>
+      <p style="margin-bottom:1.5rem;">Возможно, требуется VPN. Свяжитесь со мной напрямую:</p>
+      <div class="contact-buttons error-contacts">
+        <a href="https://t.me/yourtelegram" class="contact-btn telegram" target="_blank"><i class="fab fa-telegram-plane"></i> Telegram</a>
+        <a href="https://vk.com/yourvk" class="contact-btn vk" target="_blank"><i class="fab fa-vk"></i> ВКонтакте</a>
+        <a href="https://wa.me/yournumber" class="contact-btn whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="tel:+79991234567" class="contact-btn phone"><i class="fas fa-phone-alt"></i> Позвонить</a>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
